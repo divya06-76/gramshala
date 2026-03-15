@@ -31,21 +31,21 @@
 
   <div class="card">
     <div class="card-header">
-      <span class="card-title">📋 Quick Actions</span>
+      <span class="card-title"> Quick Actions</span>
     </div>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-      <a href="/teachers/attendance/" class="btn btn-primary">✅ Mark Teacher Attendance</a>
-      <a href="/students/attendance/" class="btn btn-secondary">📝 Mark Student Attendance</a>
-      <a href="/teachers/add/" class="btn btn-secondary">➕ Add Teacher</a>
-      <a href="/students/add/" class="btn btn-secondary">➕ Enroll Student</a>
-      <a href="/timetable/" class="btn btn-secondary">📅 View Timetable</a>
-      <a href="/reports/mdm/" class="btn btn-secondary">🍱 MDM Report</a>
+      <a href="/teachers/attendance/" class="btn btn-primary"> Mark Teacher Attendance</a>
+      <a href="/students/attendance/" class="btn btn-secondary"> Mark Student Attendance</a>
+      <a href="/teachers/add/" class="btn btn-secondary"> Add Teacher</a>
+      <a href="/students/add/" class="btn btn-secondary"> Enroll Student</a>
+      <a href="/timetable/" class="btn btn-secondary"> View Timetable</a>
+      <a href="/reports/mdm/" class="btn btn-secondary"> MDM Report</a>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header">
-      <span class="card-title">⚠️ Not Yet Marked Today</span>
+      <span class="card-title"> Not Yet Marked Today</span>
       <span class="badge badge-absent">{{ unmarked_teachers.count }} teachers</span>
     </div>
     {% if unmarked_teachers %}
@@ -56,13 +56,13 @@
         </div>
       {% endfor %}
     {% else %}
-      <p style="color: var(--green); font-size:14px;">✅ All teachers marked for today!</p>
+      <p style="color: var(--green); font-size:14px;"> All teachers marked for today!</p>
     {% endif %}
   </div>
 
   <div class="card">
     <div class="card-header">
-      <span class="card-title">🏫 Class-wise Strength</span>
+      <span class="card-title"> Class-wise Strength</span>
     </div>
     {% for c in class_data %}
     <div style="margin-bottom: 12px;">
@@ -81,7 +81,7 @@
 
   <div class="card">
     <div class="card-header">
-      <span class="card-title">📢 Announcements</span>
+      <span class="card-title"> Announcements</span>
     </div>
     {% for ann in recent_announcements %}
       <div style="padding: 10px 0; border-bottom: 1px solid var(--border);">
