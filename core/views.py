@@ -241,3 +241,6 @@ def mdm_report(request):
         'grand_present': grand_present,
         'report_date': report_date,
     })
+
+def landing(request):
+    return render(request, 'core/landing.html')
