@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Attendance History{% endblock %}
+{% block page_title %}Attendance History{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> › Attendance History</div>
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">📋 Teacher Attendance History (Last 100 records)</span>
+    <a href="/teachers/attendance/" class="btn btn-primary btn-sm">Mark Today</a>
+  </div>
+  <table>
+    <thead><tr><th>Teacher</th><th>Subject</th><th>Date</th><th>Status</th><th>Remarks</th></tr></thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td style="font-weight:500;">{{ r.teacher.name }}</td>
+        <td style="font-size:12px;">{{ r.teacher.subject }}</td>
+        <td style="font-size:13px;">{{ r.date|date:"d M Y" }}</td>
+        <td><span class="badge badge-{% if r.status == 'Present' %}present{% elif r.status == 'Absent' %}absent{% elif r.status == 'Late' %}late{% else %}leave{% endif %}">{{ r.status }}</span></td>
+        <td style="font-size:12px; color:var(--text-muted);">{{ r.remarks|default:"—" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">No records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

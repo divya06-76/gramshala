@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load dict_extras %}
+{% block title %}Timetable{% endblock %}
+{% block page_title %}Timetable{% endblock %}
+{% block nav_timetable %}active{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> › Timetable</div>
+
+<div class="filter-bar">
+  <span style="font-size:13px; font-weight:500;">Class:</span>
+  {% for c in classes %}
+  <a href="/timetable/?class={{ c }}&section={{ section }}" class="btn btn-sm {% if cls == c %}btn-primary{% else %}btn-secondary{% endif %}">{{ c }}</a>
+  {% endfor %}
+  &nbsp;|&nbsp;
+  <span style="font-size:13px; font-weight:500;">Section:</span>
+  {% for s in "ABC" %}
+  <a href="/timetable/?class={{ cls }}&section={{ s }}" class="btn btn-sm {% if section == s %}btn-primary{% else %}btn-secondary{% endif %}">{{ s }}</a>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">📅 Class {{ cls }}{{ section }} Timetable</span>
+    <button onclick="document.getElementById('addModal').style.display='flex'" class="btn btn-primary btn-sm">➕ Add Period</button>
+  </div>
+  <div class="tt-grid">
+    <table class="tt-table">
+      <thead>
+        <tr>
+          <th style="width:80px;">Period</th>
+          {% for day in days %}<th>{{ day }}</th>{% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for period in periods %}
+        <tr>
+          <td style="font-weight:500; font-size:13px; color:var(--text-muted);">P{{ period }}</td>
+          {% for day in days %}
+          <td>
+            {% with entry=grid|get_item:day %}
+            {% with cell=entry|get_item:period %}
+            {% if cell %}
+              <div class="tt-cell">
+                <div class="subj">{{ cell.subject }}</div>
+                <div class="teach">{{ cell.teacher.name|default:"—" }}</div>
+                <div style="font-size:10px; color:var(--text-muted);">{{ cell.start_time|time:"H:i" }}–{{ cell.end_time|time:"H:i" }}</div>
+              </div>
+            {% else %}
+              <span class="tt-empty">—</span>
+            {% endif %}
+            {% endwith %}
+            {% endwith %}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add Period Modal -->
+<div id="addModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:200; align-items:center; justify-content:center;">
+  <div style="background:white; border-radius:12px; padding:28px; width:480px; max-width:95vw;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <span style="font-family:'Baloo 2',cursive; font-size:17px; font-weight:600;">Add Timetable Period</span>
+      <button onclick="document.getElementById('addModal').style.display='none'" style="background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+    <form method="post" action="/timetable/add/">
+      {% csrf_token %}
+      <input type="hidden" name="student_class" value="{{ cls }}">
+      <input type="hidden" name="section" value="{{ section }}">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Day</label>
+          <select name="day" required>
+            <option value="Mon">Monday</option><option value="Tue">Tuesday</option>
+            <option value="Wed">Wednesday</option><option value="Thu">Thursday</option>
+            <option value="Fri">Friday</option><option value="Sat">Saturday</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Period</label>
+          <select name="period" required>
+            {% for p in periods %}<option value="{{ p }}">Period {{ p }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <select name="subject" required>
+            <option>Hindi</option><option>English</option><option>Math</option>
+            <option>Science</option><option>Social</option><option>Computer</option><option>Art</option><option>PT</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Teacher</label>
+          <select name="teacher">
+            <option value="">-- Select --</option>
+            {% for t in teachers %}<option value="{{ t.id }}">{{ t.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Start Time</label>
+          <input type="time" name="start_time" value="09:00" required>
+        </div>
+        <div class="form-group">
+          <label>End Time</label>
+          <input type="time" name="end_time" value="09:45" required>
+        </div>
+      </div>
+      <div style="margin-top:16px; display:flex; gap:10px;">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" onclick="document.getElementById('addModal').style.display='none'" class="btn btn-secondary">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

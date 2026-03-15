@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load dict_extras %}
+{% block title %}Teacher Attendance{% endblock %}
+{% block page_title %}Teacher Attendance{% endblock %}
+{% block nav_tatt %}active{% endblock %}
+
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> › Teacher Attendance</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">📅 Mark Attendance — {{ today|date:"l, d F Y" }}</span>
+    <a href="/teachers/attendance/history/" class="btn btn-secondary btn-sm">View History</a>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <table>
+      <thead>
+        <tr>
+          <th>Teacher Name</th>
+          <th>Subject</th>
+          <th>Employee ID</th>
+          <th>Status</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for teacher in teachers %}
+        <tr>
+          <td style="font-weight:500;">{{ teacher.name }}</td>
+          <td>{{ teacher.subject }}</td>
+          <td style="color:var(--text-muted); font-size:12px;">{{ teacher.employee_id }}</td>
+          <td>
+            <div class="att-radio">
+              {% with cur=attendance_map|get_item:teacher.id %}
+              <input type="radio" name="status_{{ teacher.id }}" id="P{{ teacher.id }}" value="Present"
+                {% if not cur or cur.status == 'Present' %}checked{% endif %}>
+              <label for="P{{ teacher.id }}" class="present-lbl">Present</label>
+
+              <input type="radio" name="status_{{ teacher.id }}" id="A{{ teacher.id }}" value="Absent"
+                {% if cur and cur.status == 'Absent' %}checked{% endif %}>
+              <label for="A{{ teacher.id }}" class="absent-lbl">Absent</label>
+
+              <input type="radio" name="status_{{ teacher.id }}" id="L{{ teacher.id }}" value="Late"
+                {% if cur and cur.status == 'Late' %}checked{% endif %}>
+              <label for="L{{ teacher.id }}" class="late-lbl">Late</label>
+
+              <input type="radio" name="status_{{ teacher.id }}" id="LV{{ teacher.id }}" value="Leave"
+                {% if cur and cur.status == 'Leave' %}checked{% endif %}>
+              <label for="LV{{ teacher.id }}" class="leave-lbl">Leave</label>
+              {% endwith %}
+            </div>
+          </td>
+          <td>
+            <input type="text" name="remarks_{{ teacher.id }}"
+              placeholder="Optional remark..." style="width:160px; padding:6px 10px; font-size:12px; border:1px solid var(--border); border-radius:6px;">
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:30px;">
+          No teachers found. <a href="/teachers/add/">Add a teacher</a> first.
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if teachers %}
+    <div style="margin-top: 20px; display:flex; gap:12px;">
+      <button type="submit" class="btn btn-primary">💾 Save Attendance</button>
+      <a href="/" class="btn btn-secondary">Cancel</a>
+    </div>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

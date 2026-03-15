@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block page_title %}Students{% endblock %}
+{% block nav_students %}active{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> › Students</div>
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">👨‍🎓 Students ({{ students.count }})</span>
+    <a href="/students/add/" class="btn btn-primary btn-sm">➕ Enroll Student</a>
+  </div>
+  <div class="filter-bar">
+    <span style="font-size:13px; font-weight:500;">Filter by class:</span>
+    <a href="/students/" class="btn btn-sm {% if not selected_class %}btn-primary{% else %}btn-secondary{% endif %}">All</a>
+    {% for c in classes %}
+    <a href="/students/?class={{ c }}" class="btn btn-sm {% if selected_class == c %}btn-primary{% else %}btn-secondary{% endif %}">Class {{ c }}</a>
+    {% endfor %}
+  </div>
+  <table>
+    <thead><tr><th>Name</th><th>Roll No</th><th>Class</th><th>Guardian</th><th>Phone</th><th>Category</th></tr></thead>
+    <tbody>
+      {% for s in students %}
+      <tr>
+        <td style="font-weight:500;">{{ s.name }}</td>
+        <td style="font-size:12px; color:var(--text-muted);">{{ s.roll_number }}</td>
+        <td><span class="badge badge-present">Class {{ s.student_class }}{{ s.section }}</span></td>
+        <td style="font-size:13px;">{{ s.guardian_name }}</td>
+        <td style="font-size:13px;">{{ s.guardian_phone }}</td>
+        <td style="font-size:12px;">{{ s.category }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No students found. <a href="/students/add/">Enroll one</a>.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

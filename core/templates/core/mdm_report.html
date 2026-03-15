@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Mid-Day Meal Report{% endblock %}
+{% block page_title %}Mid-Day Meal Report{% endblock %}
+{% block nav_mdm %}active{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> › MDM Report</div>
+
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-header">
+    <span class="card-title">🍱 Mid-Day Meal Report — {{ report_date }}</span>
+  </div>
+  <form method="get" style="display:flex; gap:12px; align-items:center; margin-bottom:20px;">
+    <label style="font-size:13px; font-weight:500;">Select Date:</label>
+    <input type="date" name="date" value="{{ report_date }}"
+      style="padding:8px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+    <button type="submit" class="btn btn-primary btn-sm">Generate</button>
+  </form>
+
+  <div class="stat-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
+    <div class="stat-card green">
+      <div class="label">Total Students</div>
+      <div class="value">{{ grand_total }}</div>
+      <div class="sub">Enrolled</div>
+    </div>
+    <div class="stat-card green">
+      <div class="label">Present Today</div>
+      <div class="value">{{ grand_present }}</div>
+      <div class="sub">MDM Beneficiaries</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="label">Absent</div>
+      <div class="value">{{ grand_total|add:"-"|add:grand_present }}</div>
+      <div class="sub">Not eligible today</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Class</th>
+        <th>Total Enrolled</th>
+        <th>Present</th>
+        <th>Absent</th>
+        <th>MDM Beneficiaries</th>
+        <th>Attendance %</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in class_report %}
+      <tr>
+        <td style="font-weight:500;">Class {{ row.class }}</td>
+        <td>{{ row.total }}</td>
+        <td><span class="badge badge-present">{{ row.present }}</span></td>
+        <td><span class="badge badge-absent">{{ row.absent }}</span></td>
+        <td style="font-weight:500; color:var(--green);">{{ row.mdm_beneficiaries }}</td>
+        <td>
+          {% if row.total > 0 %}
+            {% widthratio row.present row.total 100 %}%
+          {% else %}—{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      <tr style="background:var(--green-pale); font-weight:600;">
+        <td>TOTAL</td>
+        <td>{{ grand_total }}</td>
+        <td>{{ grand_present }}</td>
+        <td>—</td>
+        <td>{{ grand_present }}</td>
+        <td>
+          {% if grand_total > 0 %}{% widthratio grand_present grand_total 100 %}%{% else %}—{% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:20px; padding:14px; background:var(--amber-pale); border-radius:8px; border:1px solid #F5D495; font-size:13px; color:var(--amber);">
+    📋 <strong>Note:</strong> This report is auto-generated from today's student attendance. Submit to Block Education Officer by 11:00 AM daily as per MDM guidelines.
+  </div>
+</div>
+{% endblock %}

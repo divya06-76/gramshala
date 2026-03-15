@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Teachers{% endblock %}
+{% block page_title %}Teachers{% endblock %}
+{% block nav_teachers %}active{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> › Teachers</div>
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">👩‍🏫 Teaching Staff ({{ teachers.count }})</span>
+    <a href="/teachers/add/" class="btn btn-primary btn-sm">➕ Add Teacher</a>
+  </div>
+  <table>
+    <thead><tr><th>Name</th><th>Employee ID</th><th>Subject</th><th>Phone</th><th>Joining Date</th><th>Today</th></tr></thead>
+    <tbody>
+      {% for t in teachers %}
+      <tr>
+        <td style="font-weight:500;">{{ t.name }}</td>
+        <td style="font-size:12px; color:var(--text-muted);">{{ t.employee_id }}</td>
+        <td>{{ t.subject }}</td>
+        <td>{{ t.phone }}</td>
+        <td style="font-size:12px;">{{ t.joining_date|date:"d M Y" }}</td>
+        <td>
+          {% with st=t.attendance_today %}
+          <span class="badge badge-{% if st == 'Present' %}present{% elif st == 'Absent' %}absent{% elif st == 'Late' %}late{% elif st == 'Leave' %}leave{% else %}default{% endif %}">{{ st }}</span>
+          {% endwith %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No teachers yet. <a href="/teachers/add/">Add one</a>.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

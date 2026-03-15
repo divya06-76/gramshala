@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}GraamShala{% endblock %} | Rural School Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Noto+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #38554f;
+  --green-light: #779785;
+  --green-pale: #E8F5EE;
+  --amber: #ca868f;
+  --amber-pale: #FFF8E8;
+  --red: #C0392B;
+  --red-pale: #FDECEA;
+  --blue: #1A6BAA;
+  --blue-pale: #E8F2FA;
+  --text: #1A2B22;
+  --text-muted: #5A7265;
+  --border: #C8DDD2;
+  --bg: #F4F8F5;
+  --white: #FFFFFF;
+  --shadow: 0 2px 8px rgba(46,125,82,0.10);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px; min-height: 100vh; background: var(--green);
+  display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100;
+}
+.sidebar-logo {
+  padding: 22px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.sidebar-logo h1 {
+  font-family: 'Baloo 2', cursive; font-size: 22px; font-weight: 700;
+  color: #fff; letter-spacing: -0.3px;
+}
+.sidebar-logo p { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+.sidebar-nav { padding: 12px 10px; flex: 1; }
+.nav-section { font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.45);
+  letter-spacing: 1px; padding: 14px 10px 6px; }
+.nav-link {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border-radius: 8px; color: rgba(255,255,255,0.80); font-size: 14px;
+  text-decoration: none; transition: all 0.18s; margin-bottom: 2px;
+}
+.nav-link:hover, .nav-link.active {
+  background: rgba(255,255,255,0.15); color: #fff;
+}
+.nav-link svg { width: 18px; height: 18px; flex-shrink: 0; }
+.sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,0.15); }
+.sidebar-footer span { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+/* MAIN */
+.main { margin-left: 240px; flex: 1; min-height: 100vh; }
+.topbar {
+  background: var(--white); border-bottom: 1px solid var(--border);
+  padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-family: 'Baloo 2', cursive; font-size: 18px; font-weight: 600; color: var(--text); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.school-badge {
+  background: var(--green-pale); color: var(--green); font-size: 12px;
+  padding: 5px 12px; border-radius: 20px; font-weight: 500;
+}
+.content { padding: 28px; }
+
+/* CARDS */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.stat-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+  padding: 18px 20px; box-shadow: var(--shadow);
+}
+.stat-card .label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card .value { font-family: 'Baloo 2', cursive; font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; }
+.stat-card .sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.stat-card.green { border-left: 3px solid var(--green); }
+.stat-card.amber { border-left: 3px solid var(--amber); }
+.stat-card.red { border-left: 3px solid var(--red); }
+.stat-card.blue { border-left: 3px solid var(--blue); }
+
+.card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px 24px; box-shadow: var(--shadow); margin-bottom: 20px;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border);
+}
+.card-title { font-family: 'Baloo 2', cursive; font-size: 17px; font-weight: 600; }
+
+/* BUTTONS */
+.btn {
+  padding: 9px 18px; border-radius: 8px; font-size: 14px; font-weight: 500;
+  cursor: pointer; text-decoration: none; display: inline-flex; align-items: center;
+  gap: 6px; border: none; transition: all 0.15s;
+}
+.btn-primary { background: var(--green); color: white; }
+.btn-primary:hover { background: #256B46; }
+.btn-secondary { background: var(--green-pale); color: var(--green); border: 1px solid var(--border); }
+.btn-secondary:hover { background: #D0EBDA; }
+.btn-danger { background: var(--red-pale); color: var(--red); border: 1px solid #F5C6C2; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* TABLE */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; padding: 10px 14px; background: var(--bg); color: var(--text-muted);
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--green-pale); }
+
+/* BADGES */
+.badge {
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; display: inline-block;
+}
+.badge-present { background: var(--green-pale); color: var(--green); }
+.badge-absent { background: var(--red-pale); color: var(--red); }
+.badge-late { background: var(--amber-pale); color: var(--amber); }
+.badge-leave { background: var(--blue-pale); color: var(--blue); }
+.badge-default { background: var(--bg); color: var(--text-muted); }
+
+/* FORMS */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+.form-group input, .form-group select, .form-group textarea {
+  padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 14px; font-family: inherit; background: var(--white); color: var(--text);
+  transition: border 0.15s;
+}
+.form-group input:focus, .form-group select:focus {
+  outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(46,125,82,0.10);
+}
+
+/* ALERTS */
+.alert { padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 16px; }
+.alert-success { background: var(--green-pale); color: var(--green); border: 1px solid #A8D5BC; }
+.alert-error { background: var(--red-pale); color: var(--red); border: 1px solid #F5C6C2; }
+
+/* ATTENDANCE RADIO */
+.att-radio { display: flex; gap: 6px; }
+.att-radio label {
+  padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
+  cursor: pointer; border: 1px solid var(--border); transition: all 0.15s; white-space: nowrap;
+}
+.att-radio input[type="radio"] { display: none; }
+.att-radio input:checked + label.present-lbl { background: var(--green-pale); color: var(--green); border-color: var(--green); }
+.att-radio input:checked + label.absent-lbl { background: var(--red-pale); color: var(--red); border-color: var(--red); }
+.att-radio input:checked + label.late-lbl { background: var(--amber-pale); color: var(--amber); border-color: var(--amber); }
+.att-radio input:checked + label.leave-lbl { background: var(--blue-pale); color: var(--blue); border-color: var(--blue); }
+
+/* TIMETABLE */
+.tt-grid { overflow-x: auto; }
+.tt-table { min-width: 800px; }
+.tt-cell { background: var(--green-pale); border-radius: 6px; padding: 6px 8px; font-size: 12px; }
+.tt-cell .subj { font-weight: 600; color: var(--green); }
+.tt-cell .teach { color: var(--text-muted); font-size: 11px; }
+.tt-empty { color: var(--border); font-size: 12px; }
+
+/* BREADCRUMB */
+.breadcrumb { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+.breadcrumb a { color: var(--green); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+/* FILTER BAR */
+.filter-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
+.filter-bar select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
+
+/* OFFLINE BANNER */
+.offline-banner {
+  background: var(--amber-pale); border: 1px solid var(--amber); color: var(--amber);
+  padding: 8px 16px; font-size: 13px; border-radius: 8px; margin-bottom: 16px;
+  display: none; align-items: center; gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>🏫 GraamShala</h1>
+    <p>Graam Vidyalay Pranali</p>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a href="/" class="nav-link {% block nav_dashboard %}{% endblock %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+
+    <div class="nav-section">Attendance</div>
+    <a href="/teachers/attendance/" class="nav-link {% block nav_tatt %}{% endblock %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M4 20v-2a8 8 0 0116 0v2"/><path d="M9 12l2 2 4-4"/></svg>
+      Teacher Attendance
+    </a>
+    <a href="/students/attendance/" class="nav-link {% block nav_satt %}{% endblock %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Student Attendance
+    </a>
+
+    <div class="nav-section">Records</div>
+    <a href="/teachers/" class="nav-link {% block nav_teachers %}{% endblock %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M4 20v-2a8 8 0 0116 0v2"/></svg>
+      Teachers
+    </a>
+    <a href="/students/" class="nav-link {% block nav_students %}{% endblock %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+      Students
+    </a>
+    <a href="/timetable/" class="nav-link {% block nav_timetable %}{% endblock %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Timetable
+    </a>
+
+    <div class="nav-section">Reports</div>
+    <a href="/reports/mdm/" class="nav-link {% block nav_mdm %}{% endblock %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      MDM Report
+    </a>
+  </nav>
+  <div class="sidebar-footer"><span>v1.0 · Hackathon Demo</span></div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title">{% block page_title %}Dashboard{% endblock %}</span>
+    <div class="topbar-right">
+      <span class="school-badge">📍 Govt. Primary School, Seoni</span>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="offline-banner" id="offlineBanner">
+      ⚡ You're offline — data will sync when connection is restored
+    </div>
+
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-{% if msg.tags == 'error' %}error{% else %}success{% endif %}">
+          {{ msg }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<script>
+window.addEventListener('offline', () => document.getElementById('offlineBanner').style.display='flex');
+window.addEventListener('online', () => document.getElementById('offlineBanner').style.display='none');
+</script>
+</body>
+</html>

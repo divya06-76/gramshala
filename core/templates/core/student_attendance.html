@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load dict_extras %}
+{% block title %}Student Attendance{% endblock %}
+{% block page_title %}Student Attendance{% endblock %}
+{% block nav_satt %}active{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> › Student Attendance</div>
+
+<div class="filter-bar" style="margin-bottom:16px;">
+  <span style="font-size:13px; font-weight:500;">Class:</span>
+  {% for c in classes %}
+  <a href="/students/attendance/?class={{ c }}&section={{ section }}" class="btn btn-sm {% if cls == c %}btn-primary{% else %}btn-secondary{% endif %}">{{ c }}</a>
+  {% endfor %}
+  &nbsp;|&nbsp;
+  <span style="font-size:13px; font-weight:500;">Section:</span>
+  {% for s in "ABC" %}
+  <a href="/students/attendance/?class={{ cls }}&section={{ s }}" class="btn btn-sm {% if section == s %}btn-primary{% else %}btn-secondary{% endif %}">{{ s }}</a>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">📝 Class {{ cls }}{{ section }} — {{ today|date:"d F Y" }} ({{ students.count }} students)</span>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="class" value="{{ cls }}">
+    <input type="hidden" name="section" value="{{ section }}">
+    <table>
+      <thead><tr><th>#</th><th>Student Name</th><th>Roll No</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <td style="color:var(--text-muted); font-size:12px;">{{ forloop.counter }}</td>
+          <td style="font-weight:500;">{{ student.name }}</td>
+          <td style="font-size:12px; color:var(--text-muted);">{{ student.roll_number }}</td>
+          <td>
+            <div class="att-radio">
+              {% with cur=attendance_map|get_item:student.id %}
+              <input type="radio" name="status_{{ student.id }}" id="SP{{ student.id }}" value="Present"
+                {% if not cur or cur.status == 'Present' %}checked{% endif %}>
+              <label for="SP{{ student.id }}" class="present-lbl">Present</label>
+
+              <input type="radio" name="status_{{ student.id }}" id="SA{{ student.id }}" value="Absent"
+                {% if cur and cur.status == 'Absent' %}checked{% endif %}>
+              <label for="SA{{ student.id }}" class="absent-lbl">Absent</label>
+
+              <input type="radio" name="status_{{ student.id }}" id="SL{{ student.id }}" value="Late"
+                {% if cur and cur.status == 'Late' %}checked{% endif %}>
+              <label for="SL{{ student.id }}" class="late-lbl">Late</label>
+              {% endwith %}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">No students in Class {{ cls }}{{ section }}. <a href="/students/add/">Enroll one</a>.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if students %}
+    <div style="margin-top:20px; display:flex; gap:12px;">
+      <button type="submit" class="btn btn-primary">💾 Save Attendance</button>
+      <a href="/" class="btn btn-secondary">Cancel</a>
+    </div>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

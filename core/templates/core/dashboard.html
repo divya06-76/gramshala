@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card green">
+    <div class="label">Total Students</div>
+    <div class="value">{{ total_students }}</div>
+    <div class="sub">Enrolled this session</div>
+  </div>
+  <div class="stat-card blue">
+    <div class="label">Total Teachers</div>
+    <div class="value">{{ total_teachers }}</div>
+    <div class="sub">Active staff</div>
+  </div>
+  <div class="stat-card green">
+    <div class="label">Teachers Present Today</div>
+    <div class="value">{{ teachers_present }}</div>
+    <div class="sub">Out of {{ total_teachers }}</div>
+  </div>
+  <div class="stat-card amber">
+    <div class="label">Students Present Today</div>
+    <div class="value">{{ students_present }}</div>
+    <div class="sub">Out of {{ total_students }}</div>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📋 Quick Actions</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <a href="/teachers/attendance/" class="btn btn-primary">✅ Mark Teacher Attendance</a>
+      <a href="/students/attendance/" class="btn btn-secondary">📝 Mark Student Attendance</a>
+      <a href="/teachers/add/" class="btn btn-secondary">➕ Add Teacher</a>
+      <a href="/students/add/" class="btn btn-secondary">➕ Enroll Student</a>
+      <a href="/timetable/" class="btn btn-secondary">📅 View Timetable</a>
+      <a href="/reports/mdm/" class="btn btn-secondary">🍱 MDM Report</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">⚠️ Not Yet Marked Today</span>
+      <span class="badge badge-absent">{{ unmarked_teachers.count }} teachers</span>
+    </div>
+    {% if unmarked_teachers %}
+      {% for t in unmarked_teachers %}
+        <div style="display:flex; justify-content:space-between; align-items:center; padding: 8px 0; border-bottom: 1px solid var(--border);">
+          <span style="font-size:14px;">{{ t.name }}</span>
+          <span style="font-size:12px; color: var(--text-muted);">{{ t.subject }}</span>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p style="color: var(--green); font-size:14px;">✅ All teachers marked for today!</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🏫 Class-wise Strength</span>
+    </div>
+    {% for c in class_data %}
+    <div style="margin-bottom: 12px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+        <span style="font-size:13px; font-weight:500;">Class {{ c.student_class }}</span>
+        <span style="font-size:13px; color: var(--text-muted);">{{ c.count }} students</span>
+      </div>
+      <div style="height:8px; background:var(--border); border-radius:4px; overflow:hidden;">
+        <div style="height:100%; background:var(--green); width:{% widthratio c.count 60 100 %}%; border-radius:4px;"></div>
+      </div>
+    </div>
+    {% empty %}
+      <p style="color: var(--text-muted); font-size:14px;">No students enrolled yet.</p>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📢 Announcements</span>
+    </div>
+    {% for ann in recent_announcements %}
+      <div style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+        <div style="font-size:14px; font-weight:500;">{{ ann.title }}</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:3px;">{{ ann.message|truncatewords:15 }}</div>
+        <div style="font-size:11px; color:var(--border); margin-top:4px;">{{ ann.created_at|date:"d M Y" }} · {{ ann.target }}</div>
+      </div>
+    {% empty %}
+      <p style="color: var(--text-muted); font-size:14px;">No announcements yet.</p>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}
